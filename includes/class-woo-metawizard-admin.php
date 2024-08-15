@@ -10,7 +10,7 @@ class Woo_MetaWizard_Admin {
     public static function init() {
         // Admin-specific hooks.
         add_action( 'admin_menu', [ __CLASS__, 'add_admin_menu' ] );
-        add_action( 'admin_init', [ __CLASS__, 'regester_settings' ] );
+        add_action( 'admin_init', [ __CLASS__, 'register_settings' ] );
     }
 
     public static function add_admin_menu() {
@@ -25,7 +25,7 @@ class Woo_MetaWizard_Admin {
         );
     }
 
-    public static function regester_settings() {
+    public static function register_settings() {
         // Register the setting for the OpenAI API key.
         register_setting( 'woo_metawizard_settings', 'woo_metawizard_openai_api_key', [
             'sanitize_callback' => 'sanitize_text_field'
