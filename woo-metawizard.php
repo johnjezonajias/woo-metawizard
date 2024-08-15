@@ -21,3 +21,13 @@
  * Update URI:        https://webdevjohn.one/woo-meta-helper/update
  * Requires Plugins:  woocommerce, wordpress-seo
  */
+
+// Prevent direct access to the file.
+if ( ! defined( 'ABSPATH' ) ) {
+    exit;
+}
+
+// Define constants.
+define( 'WMH_VERSION', '1.0.0' );
+define( 'WMH_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
+define( 'WMH_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
