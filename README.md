@@ -37,7 +37,7 @@ This project is licensed under the **Creative Commons Attribution-NonCommercial 
 
 ## Support
 
-For any issues or questions, please visit [https://webdevjohn.one/support](https://webdevjohn.one/support) or contact the developer directly at [john@webdevjohn.one](mailto:john@webdevjohn.one).
+For any issues or questions, please visit [https://webdevjohn.one/support](https://webdevjohn.one/support) or contact the developer directly at [johnjezonajias@gmail.com](mailto:johnjezonajias@gmail.com).
 
 ## Changelog
 
