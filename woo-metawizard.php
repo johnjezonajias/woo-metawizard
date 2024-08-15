@@ -31,3 +31,13 @@ if ( ! defined( 'ABSPATH' ) ) {
 define( 'WMH_VERSION', '1.0.0' );
 define( 'WMH_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'WMH_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
+
+// Include the core plugin class.
+require_once WMH_PLUGIN_DIR . 'includes/class-woo-metawizard.php';
+
+// Activation and deactivation hooks.
+register_activation_hook( __FILE__, [ 'Woo_MetaWizard', 'activate' ] );
+register_deactivation_hook( __FILE__, [ 'Woo_MetaWizard', 'deactivate' ] );
+
+// Initialize the plugin.
+add_action( 'plugins_loaded', [ 'Woo_MetaWizard', 'init' ] );
