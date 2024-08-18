@@ -11,6 +11,7 @@ class Woo_MetaWizard_Admin {
         // Admin-specific hooks.
         add_action( 'admin_menu', [ __CLASS__, 'add_admin_menu' ] );
         add_action( 'admin_init', [ __CLASS__, 'register_settings' ] );
+        add_action( 'admin_enqueue_scripts', [ __CLASS__, 'enqueue_scripts' ] );
     }
 
     public static function add_admin_menu() {
@@ -71,5 +72,21 @@ class Woo_MetaWizard_Admin {
                 </form>
             </div>
         <?php
+    }
+
+    public static function enqueue_scripts( $hook_suffix ) {
+        // Only enqueue on the product edit screen.
+        if ( $hook_suffix == 'post.php' && get_post_type() == 'product' ) {
+            wp_enqueue_script(
+                'woo-metawizard-js',
+                WMH_PLUGIN_URL . 'assets/js/woo-metawizard.js',
+                [ 'jquery' ],
+                WMH_VERSION,
+                true
+            );
+            wp_localize_script( 'woo-metawizard-js', 'woo_metawizard', [
+                'nonce' => wp_create_nonce( 'woo_metawizard_generate_seo' ),
+            ]);
+        }
     }
 }
