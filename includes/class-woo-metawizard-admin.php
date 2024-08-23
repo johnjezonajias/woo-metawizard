@@ -77,6 +77,13 @@ class Woo_MetaWizard_Admin {
     public static function enqueue_scripts( $hook_suffix ) {
         // Only enqueue on the product edit screen.
         if ( $hook_suffix == 'post.php' && get_post_type() == 'product' ) {
+            wp_enqueue_style(
+                'woo-metawizard-styles',
+                WMH_PLUGIN_URL . 'assets/css/styles.css',
+                array(),
+                WMH_VERSION
+            );
+
             wp_enqueue_script(
                 'woo-metawizard-js',
                 WMH_PLUGIN_URL . 'assets/js/woo-metawizard.js',
@@ -84,8 +91,11 @@ class Woo_MetaWizard_Admin {
                 WMH_VERSION,
                 true
             );
+
             wp_localize_script( 'woo-metawizard-js', 'woo_metawizard', [
-                'nonce' => wp_create_nonce( 'woo_metawizard_generate_seo' ),
+                'post_id'      => get_the_ID(),
+                'nonce'        => wp_create_nonce( 'woo_metawizard_generate_seo' ),
+                'nonce_delete' => wp_create_nonce('woo_metawizard_delete_suggestion')
             ]);
         }
     }

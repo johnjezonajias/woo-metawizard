@@ -1,0 +1,19 @@
+#woo-metawizard-table tbody tr {
+    position: relative;
+}
+
+.woo-metawizard-metabox tr.deleting {
+    opacity: 0.5;
+    transition: opacity 0.3s ease-in-out;
+}
+
+.woo-metawizard-metabox .spinner {
+    bottom: 0;
+    left: 0;
+    margin: auto;
+    position: absolute;
+    right: 0;
+    top: 0;
+    visibility: visible;
+    z-index: 1;
+}
