@@ -9,9 +9,10 @@ class Woo_MetaWizard_Metabox {
 
     public static function init() {
         add_action( 'add_meta_boxes', [ __CLASS__, 'add_meta_box' ] );
-        add_action( 'save_post', [ __CLASS__, 'save_meta_box_data' ] );
         add_action( 'wp_ajax_woo_metawizard_generate_seo', [ __CLASS__, 'generate_seo_suggestions' ] );
+        add_action( 'wp_ajax_woo_metawizard_save_suggestion', [ __CLASS__, 'save_suggestion' ] );
         add_action( 'wp_ajax_woo_metawizard_delete_suggestion', [ __CLASS__, 'delete_suggestion' ] );
+        add_action( 'wp_ajax_woo_metawizard_refresh_suggestions_table', [ __CLASS__, 'refresh_suggestions_table' ] );
     }
 
     public static function add_meta_box() {
@@ -29,8 +30,6 @@ class Woo_MetaWizard_Metabox {
         // Add nonce for security and authentication.
         wp_nonce_field( 'woo_metawizard_meta_box', 'woo_metawizard_meta_box_nonce' );
 
-        $entry_number = 1;
-
         // Retrieve product's actual title and description.
         $product_title       = get_the_title( $post->ID );
         $product_excerpt     = get_the_excerpt( $post->ID );
@@ -40,133 +39,95 @@ class Woo_MetaWizard_Metabox {
 
         // Retrieve previous suggestions.
         $previous_suggestions = get_post_meta( $post->ID, '_woo_metawizard_suggestions', true );
-
-        // Sort previous suggestions by timestamp in descending order (latest first).
-        if ( ! empty( $previous_suggestions ) ) {
-            usort( $previous_suggestions, function( $a, $b ) {
-                return $b['timestamp'] - $a['timestamp'];
-            });
-        }
-
         ?>
+
         <div class="woo-metawizard-metabox">
             <div id="woo_metawizard_suggestions"></div>
 
             <div class="woo-metawizard-current">
-                <h3><?php esc_html_e( 'Current Product Meta:', 'woo-metawizard' ); ?></h3>
+                <h4><?php esc_html_e( 'Current product data', 'woo-metawizard' ); ?></h4>
                 <p>
-                    <strong><?php esc_html_e( 'Title:', 'woo-metawizard' ); ?></strong>
+                    <strong><?php esc_html_e( 'Title', 'woo-metawizard' ); ?></strong><br />
                     <?php echo esc_html( $product_title ); ?>
                 </p>
                 <p>
-                    <strong><?php esc_html_e( 'Description:', 'woo-metawizard' ); ?></strong>
+                    <strong><?php esc_html_e( 'Description', 'woo-metawizard' ); ?></strong><br />
                     <?php echo esc_textarea( $product_description ); ?>
                 </p>
                 <?php if ( $product_keywords ) : ?>
                     <p>
-                        <strong><?php esc_html_e( 'Keywords:', 'woo-metawizard' ); ?></strong>
+                        <strong><?php esc_html_e( 'Keywords', 'woo-metawizard' ); ?></strong><br />
                         <?php echo esc_html( $product_keywords ); ?>
                     </p>
                 <?php endif; ?>
+                <p>
+                    <button type="button" class="button button-primary" id="woo_metawizard_generate_seo">
+                        <?php esc_html_e( 'Generate SEO Suggestion', 'woo-metawizard' ); ?>
+                    </button>
+                </p>
             </div>
             
             <div class="woo-metawizard-placeholder">
-                <h3><?php esc_html_e( 'Suggested SEO Metadata:', 'woo-metawizard' ); ?></h3>
-                <p>
-                    <label for="woo_metawizard_meta_title"><?php esc_html_e( 'Meta Title', 'woo-metawizard' ); ?></label>
-                    <input type="text" id="woo_metawizard_meta_title" name="woo_metawizard_meta_title" value="<?php echo isset($previous_suggestions[0]['meta_title']) ? esc_attr($previous_suggestions[0]['meta_title']) : ''; ?>" class="widefat" />
-                </p>
-                <p>
-                    <label for="woo_metawizard_meta_description"><?php esc_html_e( 'Meta Description', 'woo-metawizard' ); ?></label>
-                    <textarea id="woo_metawizard_meta_description" name="woo_metawizard_meta_description" class="widefat"><?php echo isset($previous_suggestions[0]['meta_description']) ? esc_textarea($previous_suggestions[0]['meta_description']) : ''; ?></textarea>
-                </p>
-                <p>
-                    <label for="woo_metawizard_meta_keywords"><?php esc_html_e( 'Meta Keywords', 'woo-metawizard' ); ?></label>
-                    <input type="text" id="woo_metawizard_meta_keywords" name="woo_metawizard_meta_keywords" value="<?php echo isset($previous_suggestions[0]['meta_keywords']) ? esc_attr($previous_suggestions[0]['meta_keywords']) : ''; ?>" class="widefat" />
-                </p>
-                <p>
-                    <button type="button" class="button button-primary" id="woo_metawizard_generate_seo"><?php esc_html_e( 'Generate SEO Suggestions', 'woo-metawizard' ); ?></button>
-                </p>
+                <div class="woo-metawizard-wrap">
+                    <h4><?php esc_html_e( 'Optimized SEO suggestion result', 'woo-metawizard' ); ?></h4>
+                    <p>
+                        <label for="woo_metawizard_meta_title"><?php esc_html_e( 'Meta Title', 'woo-metawizard' ); ?></label>
+                        <input type="text" id="woo_metawizard_meta_title" name="woo_metawizard_meta_title" value="" class="widefat" />
+                    </p>
+                    <p>
+                        <label for="woo_metawizard_meta_description"><?php esc_html_e( 'Meta Description', 'woo-metawizard' ); ?></label>
+                        <textarea id="woo_metawizard_meta_description" name="woo_metawizard_meta_description" class="widefat"></textarea>
+                    </p>
+                    <p>
+                        <label for="woo_metawizard_meta_keywords"><?php esc_html_e( 'Meta Keywords', 'woo-metawizard' ); ?></label>
+                        <input type="text" id="woo_metawizard_meta_keywords" name="woo_metawizard_meta_keywords" value="" class="widefat" />
+                    </p>
+                    <p>
+                        <button type="button" class="button button-primary" id="woo_metawizard_save_suggestion" disabled>
+                            <?php esc_html_e( 'Save for Reference', 'woo-metawizard' ); ?>
+                        </button>
+                    </p>
+                </div>
+                <span id="form-spinner" class="spinner" style="display:none;"></span>
             </div>
 
             <?php if ( ! empty( $previous_suggestions ) ) : ?>
-                <h3><?php esc_html_e( 'Previously Suggested Metadata', 'woo-metawizard' ); ?></h3>
-                <table id="woo-metawizard-table" class="widefat">
-                    <thead>
-                        <tr>
-                            <th><?php esc_html_e( 'No.', 'woo-metawizard' ); ?></th>
-                            <th><?php esc_html_e( 'Meta Title', 'woo-metawizard' ); ?></th>
-                            <th><?php esc_html_e( 'Meta Description', 'woo-metawizard' ); ?></th>
-                            <th><?php esc_html_e( 'Meta Keywords', 'woo-metawizard' ); ?></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    <?php foreach ( $previous_suggestions as $index => $suggestion ) : ?>
-                        <tr>
-                            <td>
-                                <?php echo esc_html( $index + 1 ); ?>
-                                <span class="spinner" style="display:none;"></span>
-                            </td>
-                            <td>
-                                <?php echo esc_html( $suggestion['meta_title'] ); ?><br />
-                                <div class="row-actions">
-                                    <a href="#" class="woo-metawizard-delete" data-index="<?php echo esc_attr( $index ); ?>"><?php esc_html_e( 'Delete', 'woo-metawizard' ); ?></a> | 
-                                    <?php echo esc_html( date( 'Y-m-d H:i:s', $suggestion['timestamp'] ) ); ?>
-                                </div>
-                            </td>
-                            <td><?php echo esc_html( $suggestion['meta_description'] ); ?></td>
-                            <td><?php echo esc_html( $suggestion['meta_keywords'] ); ?></td>
-                        </tr>
-                    <?php endforeach; ?>
-                    </tbody>
-                </table>
-                <br>
+                <div class="woo-metawizard-table">
+                    <h4><?php esc_html_e( 'Saved suggested data', 'woo-metawizard' ); ?></h4>
+                    <table id="woo-metawizard-table" class="widefat">
+                        <thead>
+                            <tr>
+                                <th><?php esc_html_e( 'No.', 'woo-metawizard' ); ?></th>
+                                <th><?php esc_html_e( 'Meta Title', 'woo-metawizard' ); ?></th>
+                                <th><?php esc_html_e( 'Meta Description', 'woo-metawizard' ); ?></th>
+                                <th><?php esc_html_e( 'Meta Keywords', 'woo-metawizard' ); ?></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        <?php foreach ( $previous_suggestions as $index => $suggestion ) : ?>
+                            <tr>
+                                <td>
+                                    <?php echo esc_html( $index + 1 ); ?>
+                                </td>
+                                <td>
+                                    <?php echo esc_html( $suggestion['meta_title'] ); ?><br />
+                                    <div class="row-actions">
+                                        <a href="#" class="woo-metawizard-delete" data-index="<?php echo esc_attr( $index ); ?>"><?php esc_html_e( 'Delete', 'woo-metawizard' ); ?></a> | 
+                                        <?php echo esc_html( date( 'Y-m-d H:i:s', $suggestion['timestamp'] ) ); ?>
+                                    </div>
+                                </td>
+                                <td><?php echo esc_html( $suggestion['meta_description'] ); ?></td>
+                                <td><?php echo esc_html( $suggestion['meta_keywords'] ); ?></td>
+                            </tr>
+                        <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                    <span id="table-spinner" class="spinner" style="display:none;"></span>
+                </div>
             <?php endif; ?>
         </div>
         <?php
     }
-
-    public static function save_meta_box_data( $post_id ) {
-        // Check nonce.
-        if ( ! isset( $_POST['woo_metawizard_meta_box_nonce'] ) || ! wp_verify_nonce( $_POST['woo_metawizard_meta_box_nonce'], 'woo_metawizard_meta_box' ) ) {
-            return;
-        }
-    
-        // Check if the current user has permission to edit the post.
-        if ( ! current_user_can( 'edit_post', $post_id ) ) {
-            return;
-        }
-    
-        // Retrieve current product title and description.
-        $current_title       = get_the_title( $post_id );
-        $current_description = get_post_field( 'post_content', $post_id );
-    
-        // Retrieve submitted meta data.
-        $meta_title       = isset( $_POST['woo_metawizard_meta_title'] ) ? sanitize_text_field( $_POST['woo_metawizard_meta_title'] ) : '';
-        $meta_description = isset( $_POST['woo_metawizard_meta_description'] ) ? sanitize_textarea_field( $_POST['woo_metawizard_meta_description'] ) : '';
-        $meta_keywords    = isset( $_POST['woo_metawizard_meta_keywords'] ) ? sanitize_text_field( $_POST['woo_metawizard_meta_keywords'] ) : '';
-    
-        // Check if the submitted meta data is different from the current product title and description.
-        if ( $meta_title === $current_title && $meta_description === $current_description ) {
-            // Do not save if the values are the same as the current product title and description.
-            return;
-        }
-    
-        // Save or update the meta data.
-        update_post_meta( $post_id, '_woo_metawizard_meta_title', $meta_title );
-        update_post_meta( $post_id, '_woo_metawizard_meta_description', $meta_description );
-        update_post_meta( $post_id, '_woo_metawizard_meta_keywords', $meta_keywords );
-    
-        // Store the suggestions with a timestamp.
-        $previous_suggestions = get_post_meta( $post_id, '_woo_metawizard_suggestions', true ) ?: [];
-        $previous_suggestions[] = [
-            'meta_title'       => $meta_title,
-            'meta_description' => $meta_description,
-            'meta_keywords'    => $meta_keywords,
-            'timestamp'        => time(),
-        ];
-        update_post_meta( $post_id, '_woo_metawizard_suggestions', $previous_suggestions );
-    }    
 
     public static function generate_seo_suggestions() {
         // Verify the nonce for security.
@@ -246,6 +207,31 @@ class Woo_MetaWizard_Metabox {
         }
     }
 
+    public static function save_suggestion() {
+        check_ajax_referer( 'woo_metawizard_save_suggestion', 'nonce' );
+    
+        $post_id = isset( $_POST['post_id'] ) ? intval( $_POST['post_id'] ) : 0;
+        $meta_title = isset( $_POST['meta_title'] ) ? sanitize_text_field( $_POST['meta_title'] ) : '';
+        $meta_description = isset( $_POST['meta_description'] ) ? sanitize_textarea_field( $_POST['meta_description'] ) : '';
+        $meta_keywords = isset( $_POST['meta_keywords'] ) ? sanitize_text_field( $_POST['meta_keywords'] ) : '';
+    
+        if ( $post_id && $meta_title && $meta_description ) {
+            // Save the suggestion data independently of the post save action.
+            $previous_suggestions = get_post_meta( $post_id, '_woo_metawizard_suggestions', true ) ?: [];
+            $previous_suggestions[] = [
+                'meta_title' => $meta_title,
+                'meta_description' => $meta_description,
+                'meta_keywords' => $meta_keywords,
+                'timestamp' => time(),
+            ];
+            update_post_meta( $post_id, '_woo_metawizard_suggestions', $previous_suggestions );
+    
+            wp_send_json_success();
+        } else {
+            wp_send_json_error();
+        }
+    }
+
     public static function delete_suggestion() {
         // Check nonce for security.
         check_ajax_referer( 'woo_metawizard_delete_suggestion', 'nonce' );
@@ -271,5 +257,44 @@ class Woo_MetaWizard_Metabox {
         }
     
         wp_send_json_error();
+    }
+
+    public static function refresh_suggestions_table() {
+        if ( ! isset( $_POST['post_id'] ) || ! current_user_can( 'edit_post', intval( $_POST['post_id'] ) ) ) {
+            wp_send_json_error();
+            return;
+        }
+
+        $post_id = intval( $_POST['post_id'] );
+        $previous_suggestions = get_post_meta( $post_id, '_woo_metawizard_suggestions', true );
+
+        if ( empty( $previous_suggestions ) ) {
+            wp_send_json_error( 'No suggestions found.' );
+            return;
+        }
+
+        ob_start();
+        foreach ( $previous_suggestions as $index => $suggestion ) {
+            ?>
+            <tr>
+                <td>
+                    <?php echo esc_html( $index + 1 ); ?>
+                    <span class="spinner" style="display:none;"></span>
+                </td>
+                <td>
+                    <?php echo esc_html( $suggestion['meta_title'] ); ?><br />
+                    <div class="row-actions">
+                        <a href="#" class="woo-metawizard-delete" data-index="<?php echo esc_attr( $index ); ?>"><?php esc_html_e( 'Delete', 'woo-metawizard' ); ?></a> | 
+                        <?php echo esc_html( date( 'Y-m-d H:i:s', $suggestion['timestamp'] ) ); ?>
+                    </div>
+                </td>
+                <td><?php echo esc_html( $suggestion['meta_description'] ); ?></td>
+                <td><?php echo esc_html( $suggestion['meta_keywords'] ); ?></td>
+            </tr>
+            <?php
+        }
+        $table_content = ob_get_clean();
+
+        wp_send_json_success( $table_content );
     }
 }

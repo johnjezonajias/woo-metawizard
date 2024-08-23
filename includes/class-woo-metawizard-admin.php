@@ -95,7 +95,8 @@ class Woo_MetaWizard_Admin {
             wp_localize_script( 'woo-metawizard-js', 'woo_metawizard', [
                 'post_id'      => get_the_ID(),
                 'nonce'        => wp_create_nonce( 'woo_metawizard_generate_seo' ),
-                'nonce_delete' => wp_create_nonce('woo_metawizard_delete_suggestion')
+                'nonce_save'   => wp_create_nonce( 'woo_metawizard_save_suggestion' ),
+                'nonce_delete' => wp_create_nonce( 'woo_metawizard_delete_suggestion' )
             ]);
         }
     }
