@@ -83,6 +83,9 @@ class Woo_MetaWizard_Metabox {
                         <input type="text" id="woo_metawizard_meta_keywords" name="woo_metawizard_meta_keywords" value="" class="widefat" />
                     </p>
                     <p>
+                        <button type="button" class="button button-primary" id="woo_metawizard_use_for_yoast" disabled>
+                            <?php esc_html_e( 'Use it for Yoast', 'woo-metawizard' ); ?>
+                        </button>
                         <button type="button" class="button button-primary" id="woo_metawizard_save_suggestion" disabled>
                             <?php esc_html_e( 'Save for Reference', 'woo-metawizard' ); ?>
                         </button>
@@ -104,22 +107,22 @@ class Woo_MetaWizard_Metabox {
                             </tr>
                         </thead>
                         <tbody>
-                        <?php foreach ( $previous_suggestions as $index => $suggestion ) : ?>
-                            <tr>
-                                <td>
-                                    <?php echo esc_html( $index + 1 ); ?>
-                                </td>
-                                <td>
-                                    <?php echo esc_html( $suggestion['meta_title'] ); ?><br />
-                                    <div class="row-actions">
-                                        <a href="#" class="woo-metawizard-delete" data-index="<?php echo esc_attr( $index ); ?>"><?php esc_html_e( 'Delete', 'woo-metawizard' ); ?></a> | 
-                                        <?php echo esc_html( date( 'Y-m-d H:i:s', $suggestion['timestamp'] ) ); ?>
-                                    </div>
-                                </td>
-                                <td><?php echo esc_html( $suggestion['meta_description'] ); ?></td>
-                                <td><?php echo esc_html( $suggestion['meta_keywords'] ); ?></td>
-                            </tr>
-                        <?php endforeach; ?>
+                            <?php foreach ( $previous_suggestions as $index => $suggestion ) : ?>
+                                <tr>
+                                    <td>
+                                        <?php echo esc_html( $index + 1 ); ?>
+                                    </td>
+                                    <td>
+                                        <?php echo esc_html( $suggestion['meta_title'] ); ?><br />
+                                        <div class="row-actions">
+                                            <a href="#" class="woo-metawizard-delete" data-index="<?php echo esc_attr( $index ); ?>"><?php esc_html_e( 'Delete', 'woo-metawizard' ); ?></a> | 
+                                            <?php echo esc_html( date( 'Y-m-d H:i:s', $suggestion['timestamp'] ) ); ?>
+                                        </div>
+                                    </td>
+                                    <td><?php echo esc_html( $suggestion['meta_description'] ); ?></td>
+                                    <td><?php echo esc_html( $suggestion['meta_keywords'] ); ?></td>
+                                </tr>
+                            <?php endforeach; ?>
                         </tbody>
                     </table>
                     <span id="table-spinner" class="spinner" style="display:none;"></span>
@@ -168,30 +171,32 @@ class Woo_MetaWizard_Metabox {
             - Mention variation options (size, color) and customization to highlight choices.
             - Emphasize unique selling points and benefits that distinguish the product.
             - Incorporate the store name " . $store_info['name'] . " to enhance brand recognition.
-            - Highlight the store location " . $store_info['full_address'] . " to improve local SEO and differentiate from competitors.
+            - Highlight the store location to improve local SEO and differentiate from competitors.
             - Use relevant, high-impact keywords to boost search visibility.
             - Maintain a consistent and professional tone across all meta titles.
+            - Make sure the SEO title strictly does not exceed 60 characters or approximately 600 pixels in width to avoid truncation in search engine results.
 
             Guidelines for Meta Descriptions:
             - Create concise, informative descriptions that clearly present product features and benefits.
             - Highlight unique selling points, including any variation and customization options.
             - Reinforce brand identity by mentioning the store name " . $store_info['name'] . " in the description.
-            - Emphasize the store’s location " . $store_info['full_address'] . " to attract local customers and stand out in the local market.
-            - Incorporate the product image from " . $product_image_url . " to enhance visual appeal and search relevance.
+            - Emphasize the store’s location to attract local customers and stand out in the local market.
             - Strategically integrate relevant keywords to improve search rankings without keyword stuffing.
             - Ensure a consistent tone that matches the meta title and overall brand voice.
+            - Strictly limit the meta description to 155-160 characters to comply with Yoast SEO guidelines and prevent truncation in search results.
 
             Guidelines for Meta Keywords:
-            - Choose keywords that precisely describe the product’s key features and variations.
-            - Include industry-relevant, high-impact keywords that align with the product category " . $product_categories . ".
-            - Avoid excessive keywords; focus on quality, relevance, and alignment with meta content.
-            - Ensure keyword consistency with the content in the meta title and description for better SEO performance.
+            - Keyphrase in Introduction: Ensure that the keyphrase or its synonyms appear in the first paragraph to make the topic clear immediately.
+            - Keyphrase Length: Make sure the keyphrase is neither too short nor too long, aligning with Yoast SEO's recommendations.
+            - Keyphrase in Meta Description: The keyphrase or its synonym should appear in the meta description to boost SEO effectiveness.
+            - Suggest Enough Keywords/Keyphrases: Ensure that the meta fields contain a sufficient number of relevant keywords or keyphrases, avoiding overuse or underuse.
+            - 1-2 key words or key phrase.
 
             Please format the response as a JSON object with the following structure:
             {
                 \"meta_title\": \"Title\",
                 \"meta_description\": \"Description\",
-                \"meta_keywords\": \"Keywords\",
+                \"meta_keywords\": \"Keywords\"
             }
 
             Also, the best meta title length is 50-60 characters and meta description length is between 50-160 characters. Please ensure that you limit its length appropriately after generating the content.

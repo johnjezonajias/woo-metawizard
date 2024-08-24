@@ -20,13 +20,16 @@ jQuery(document).ready(function($) {
             data: data,
             success: function(response) {
                 if (response.success) {
-                    // Parse the suggested data.
-                    const suggestedData = JSON.parse(response.data);
-    
-                    // Populate fields with the response data.
-                    $('#woo_metawizard_meta_title').val(suggestedData.meta_title);
-                    $('#woo_metawizard_meta_description').val(suggestedData.meta_description);
-                    $('#woo_metawizard_meta_keywords').val(suggestedData.meta_keywords);
+                    try {
+                        const suggestedData = JSON.parse(response.data);
+            
+                        // Populate fields with the response data.
+                        $('#woo_metawizard_meta_title').val(suggestedData.meta_title);
+                        $('#woo_metawizard_meta_description').val(suggestedData.meta_description);
+                        $('#woo_metawizard_meta_keywords').val(suggestedData.meta_keywords);
+                    } catch (error) {
+                        alert('Failed to parse the response data: ' + error.message);
+                    }
                 } else {
                     alert(response.data.message);
                 }
@@ -42,6 +45,51 @@ jQuery(document).ready(function($) {
         });
     });
     
+    // Handle yoast suggestion population action.
+    $('#woo_metawizard_use_for_yoast').on('click', function(e) {
+        e.preventDefault();
+
+        var metaTitle = $('#woo_metawizard_meta_title').val().trim();
+        var metaDescription = $('#woo_metawizard_meta_description').val().trim();
+        var metaKeywords = $('#woo_metawizard_meta_keywords').val().trim();
+
+        // Populate the hidden Yoast fields.
+        $('#yoast_wpseo_title').val(metaTitle);
+        $('#yoast_wpseo_metadesc').val(metaDescription);
+        $('#yoast_wpseo_focuskw').val(metaKeywords);
+
+        // Update the Meta Keywords.
+        $('#focus-keyword-input-metabox').val(metaKeywords);
+
+        // Update the SEO Title.
+        var titleEditorContainer = document.querySelector('#yoast-google-preview-title-metabox');
+        if (titleEditorContainer) {
+            var titleEditorContent = titleEditorContainer.querySelector('[data-contents="true"]');
+            // Clear existing content and append new text.
+            while (titleEditorContent.firstChild) {
+                titleEditorContent.removeChild(titleEditorContent.firstChild);
+            }
+            titleEditorContent.appendChild(document.createTextNode(metaTitle));
+            titleEditorContainer.dispatchEvent(new Event('input', { bubbles: true }));
+        }
+
+        // Update the SEO Description.
+        var descriptionEditorContainer = document.querySelector('#yoast-google-preview-description-metabox');
+        if (descriptionEditorContainer) {
+            var descriptionEditorContent = descriptionEditorContainer.querySelector('[data-contents="true"]');
+            // Clear existing content and append new text.
+            while (descriptionEditorContent.firstChild) {
+                descriptionEditorContent.removeChild(descriptionEditorContent.firstChild);
+            }
+            descriptionEditorContent.appendChild(document.createTextNode(metaDescription));
+            descriptionEditorContainer.dispatchEvent(new Event('input', { bubbles: true }));
+        }
+
+        // Scroll to the Yoast section.
+        $('html, body').animate({
+            scrollTop: $('#wpseo_meta').offset().top
+        }, 800);
+    });
 
     // Handle save suggestion action.
     $('#woo_metawizard_save_suggestion').on('click', function(e) {
@@ -202,8 +250,10 @@ jQuery(document).ready(function($) {
 
         // Enable the button if at least one field is not empty.
         if (metaTitle && metaDescription && metaKeywords) {
+            $('#woo_metawizard_use_for_yoast').prop('disabled', false);
             $('#woo_metawizard_save_suggestion').prop('disabled', false);
         } else {
+            $('#woo_metawizard_use_for_yoast').prop('disabled', true);
             $('#woo_metawizard_save_suggestion').prop('disabled', true);
         }
     }
