@@ -1,0 +1,19 @@
+button.button {
+    @include button-style($color-primary, $color-primary-hover);
+    font-size: $font-size-base;
+    padding: $spacing-small $spacing-large;
+    border-radius: $border-radius-base;
+    margin-right: $spacing-small;
+    min-width: 120px;
+}
+
+.spinner {
+    bottom: 0;
+    left: 0;
+    margin: auto;
+    position: absolute;
+    right: 0;
+    top: 0;
+    visibility: visible;
+    z-index: 1;
+}

@@ -1,0 +1,23 @@
+body {
+    font-size: $font-size-base;
+    font-family: $font-family-base;
+    color: $color-black;
+    background-color: $color-white;
+    line-height: 1.5;
+}
+
+h4 {
+    font-size: 16px;
+    color: $color-black;
+    margin-bottom: $spacing-base;
+    border-bottom: $border-width-base solid $color-light-gray;
+    padding-bottom: $spacing-small;
+    font-family: $font-family-headings;
+    font-weight: $font-weight-bold;
+}
+
+p {
+    margin-bottom: $spacing-base;
+    font-size: $font-size-base;
+    color: $color-gray;
+}
