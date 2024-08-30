@@ -44,7 +44,13 @@ class Woo_MetaWizard_Admin {
             'sanitize_callback' => 'intval'
         ]);
 
-        // Add OpenAI settings section.
+        register_setting( 'woo_metawizard_settings', 'woo_metawizard_delete_data_on_deactivation', [
+            'type'              => 'string',
+            'sanitize_callback' =>  [ 'WooMetaWizard_Utils', 'sanitize_checkbox' ],
+            'default'           => 'no'
+        ]);
+
+        // OpenAI settings section.
         add_settings_section(
             'woo_metawizard_section',
             __( 'OpenAI Settings', 'woo-metawizard' ),
@@ -52,7 +58,7 @@ class Woo_MetaWizard_Admin {
             'woo-metawizard'
         );
 
-        // Add the OpenAI API key field.
+        // OpenAI API key field.
         add_settings_field(
             'woo_metawizard_openai_api_key',
             __( 'API Key', 'woo-metawizard' ),
@@ -61,7 +67,7 @@ class Woo_MetaWizard_Admin {
             'woo_metawizard_section'
         );
 
-        // Add model field.
+        // Model field.
         add_settings_field(
             'woo_metawizard_model',
             __( 'Model', 'woo-metawizard' ),
@@ -70,7 +76,7 @@ class Woo_MetaWizard_Admin {
             'woo_metawizard_section'
         );
 
-        // Add temperature field.
+        // Temperature field.
         add_settings_field(
             'woo_metawizard_temperature',
             __( 'Temperature', 'woo-metawizard' ),
@@ -79,13 +85,30 @@ class Woo_MetaWizard_Admin {
             'woo_metawizard_section'
         );
 
-        // Add max tokens field.
+        // Max tokens field.
         add_settings_field(
             'woo_metawizard_max_tokens',
             __( 'Max Tokens', 'woo-metawizard' ),
             [ __CLASS__, 'render_max_tokens_field' ],
             'woo-metawizard',
             'woo_metawizard_section'
+        );
+
+        // Plugin settings section.
+        add_settings_section(
+            'woo_metawizard_plugin_section',
+            __( 'Plugin Settings', 'woo-metawizard' ),
+            null,
+            'woo-metawizard'
+        );
+
+        // Delete plugin data field.
+        add_settings_field(
+            'woo_metawizard_delete_data_on_deactivation',
+            __( 'Plugin Deactivation', 'woo-metawizard' ),
+            [ __CLASS__, 'render_delete_data_on_deactivation_field' ],
+            'woo-metawizard',
+            'woo_metawizard_plugin_section'
         );
     }
 
@@ -144,6 +167,14 @@ class Woo_MetaWizard_Admin {
                     <span class="woo-metawizard__tips--tooltip" aria-label="<?php esc_attr_e( 'Defines the maximum length of the AI response in tokens. A token roughly corresponds to a word or punctuation mark.', 'woo-metawizard' ); ?>">?</span>
                 </div>
             </div>
+        <?php
+    }
+
+    public static function render_delete_data_on_deactivation_field() {
+        $value = get_option( 'woo_metawizard_delete_data_on_deactivation', 'no' );
+        ?>
+        <input type="checkbox" name="woo_metawizard_delete_data_on_deactivation" value="yes" <?php checked( 'yes', $value ); ?>>
+        <?php _e( 'Check this if you want to delete all plugin data when deactivating the plugin.', 'woo-metawizard' ); ?>
         <?php
     }
 

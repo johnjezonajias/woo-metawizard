@@ -267,6 +267,7 @@ class Woo_MetaWizard_Metabox {
                 <td>
                     <?php echo esc_html( $suggestion['meta_title'] ); ?><br />
                     <div class="row-actions">
+                        <a href="#" class="woo-metawizard-use-yoast" data-index="<?php echo esc_attr( $index ); ?>"><?php esc_html_e( 'Use it for Yoast', 'woo-metawizard' ); ?></a> |
                         <a href="#" class="woo-metawizard-delete" data-index="<?php echo esc_attr( $index ); ?>"><?php esc_html_e( 'Delete', 'woo-metawizard' ); ?></a> | 
                         <?php echo esc_html( date( 'Y-m-d H:i:s', $suggestion['timestamp'] ) ); ?>
                     </div>

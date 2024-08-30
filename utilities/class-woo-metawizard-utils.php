@@ -184,4 +184,17 @@ class WooMetaWizard_Utils {
 
         return implode( " ", $variation_strings );
     }
+
+    /**
+     * Sanitize a checkbox input.
+     *
+     * This method ensures that only 'yes' or 'no' values are accepted. 
+     * If the input is 'yes', it returns 'yes'; otherwise, it returns 'no'.
+     *
+     * @param string $input The checkbox input value.
+     * @return string 'yes' if the input is 'yes', otherwise 'no'.
+     */
+    public static function sanitize_checkbox( $input ) {
+        return $input === 'yes' ? 'yes' : 'no';
+    }
 }
