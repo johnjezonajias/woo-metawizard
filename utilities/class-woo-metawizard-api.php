@@ -18,21 +18,25 @@ class WooMetaWizard_API {
     public static function call_openai_api( $primer ) {
         $url = 'https://api.openai.com/v1/chat/completions';
         $api_key = get_option( 'woo_metawizard_openai_api_key' );
+        $model = get_option( 'woo_metawizard_model' );
+        $temperature = floatval( get_option( 'woo_metawizard_temperature' ) );
+        $max_tokens = intval( get_option( 'woo_metawizard_max_tokens' ) );
+
         $headers = array(
             "Authorization: Bearer {$api_key}",
             "Content-Type: application/json"
         );
 
         $data = array(
-            "model"       => "gpt-4",
+            "model"       => $model,
             "messages"    => array(
                 array(
                     "role"    => "system",
                     "content" => $primer
                 )
             ),
-            "temperature" => 0.7,
-            "max_tokens"  => 260
+            "temperature" => $temperature,
+            "max_tokens"  => $max_tokens
         );
 
         $curl = curl_init( $url );

@@ -1,0 +1,33 @@
+.woo-metawizard__tips {
+  align-items: center;
+  display: flex; }
+  .woo-metawizard__tips--tooltip {
+    align-items: center;
+    background: #2c3338;
+    border-radius: 50%;
+    color: #f0f0f1;
+    cursor: pointer;
+    display: flex;
+    font-size: 11px;
+    font-weight: 600;
+    height: 16px;
+    justify-content: center;
+    margin-left: 8px;
+    position: relative;
+    width: 16px; }
+    .woo-metawizard__tips--tooltip:hover::after {
+      background-color: #2c3338;
+      border-radius: 5px;
+      color: #f0f0f1;
+      content: attr(aria-label);
+      font-size: 12px;
+      font-weight: 400;
+      left: 25px;
+      letter-spacing: 0.0125rem;
+      padding: 10px 15px;
+      position: absolute;
+      top: 100%;
+      white-space: nowrap;
+      z-index: 10; }
+
+/*# sourceMappingURL=admin-styles.css.map */
