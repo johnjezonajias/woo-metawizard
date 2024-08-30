@@ -35,7 +35,6 @@ class Woo_MetaWizard_Metabox {
         $product_excerpt     = get_the_excerpt( $post->ID );
         $product_description = get_post_field( 'post_content', $post->ID );
         $product_description = !empty( $product_description ) ? $product_description : $product_excerpt;
-        $product_keywords    = '';
 
         // Retrieve previous suggestions.
         $previous_suggestions = get_post_meta( $post->ID, '_woo_metawizard_suggestions', true );
@@ -54,12 +53,6 @@ class Woo_MetaWizard_Metabox {
                     <strong><?php esc_html_e( 'Description', 'woo-metawizard' ); ?></strong><br />
                     <?php echo esc_textarea( $product_description ); ?>
                 </p>
-                <?php if ( $product_keywords ) : ?>
-                    <p>
-                        <strong><?php esc_html_e( 'Keywords', 'woo-metawizard' ); ?></strong><br />
-                        <?php echo esc_html( $product_keywords ); ?>
-                    </p>
-                <?php endif; ?>
                 <p>
                     <button type="button" class="button button-primary" id="woo_metawizard_generate_seo">
                         <?php esc_html_e( 'Generate SEO Suggestion', 'woo-metawizard' ); ?>
@@ -77,10 +70,6 @@ class Woo_MetaWizard_Metabox {
                     <p>
                         <label for="woo_metawizard_meta_description"><?php esc_html_e( 'Meta Description', 'woo-metawizard' ); ?></label>
                         <textarea id="woo_metawizard_meta_description" name="woo_metawizard_meta_description" class="widefat"></textarea>
-                    </p>
-                    <p>
-                        <label for="woo_metawizard_meta_keywords"><?php esc_html_e( 'Meta Keywords', 'woo-metawizard' ); ?></label>
-                        <input type="text" id="woo_metawizard_meta_keywords" name="woo_metawizard_meta_keywords" value="" class="widefat" />
                     </p>
                     <p>
                         <button type="button" class="button button-primary" id="woo_metawizard_use_for_yoast" disabled>
@@ -103,7 +92,6 @@ class Woo_MetaWizard_Metabox {
                                 <th><?php esc_html_e( 'No.', 'woo-metawizard' ); ?></th>
                                 <th><?php esc_html_e( 'Meta Title', 'woo-metawizard' ); ?></th>
                                 <th><?php esc_html_e( 'Meta Description', 'woo-metawizard' ); ?></th>
-                                <th><?php esc_html_e( 'Meta Keywords', 'woo-metawizard' ); ?></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -115,12 +103,12 @@ class Woo_MetaWizard_Metabox {
                                     <td>
                                         <?php echo esc_html( $suggestion['meta_title'] ); ?><br />
                                         <div class="row-actions">
+                                            <a href="#" class="woo-metawizard-use-yoast" data-index="<?php echo esc_attr( $index ); ?>"><?php esc_html_e( 'Use it for Yoast', 'woo-metawizard' ); ?></a> |
                                             <a href="#" class="woo-metawizard-delete" data-index="<?php echo esc_attr( $index ); ?>"><?php esc_html_e( 'Delete', 'woo-metawizard' ); ?></a> | 
                                             <?php echo esc_html( date( 'Y-m-d H:i:s', $suggestion['timestamp'] ) ); ?>
                                         </div>
                                     </td>
                                     <td><?php echo esc_html( $suggestion['meta_description'] ); ?></td>
-                                    <td><?php echo esc_html( $suggestion['meta_keywords'] ); ?></td>
                                 </tr>
                             <?php endforeach; ?>
                         </tbody>
@@ -185,18 +173,10 @@ class Woo_MetaWizard_Metabox {
             - Ensure a consistent tone that matches the meta title and overall brand voice.
             - Strictly limit the meta description to 155-160 characters to comply with Yoast SEO guidelines and prevent truncation in search results.
 
-            Guidelines for Meta Keywords:
-            - Keyphrase in Introduction: Ensure that the keyphrase or its synonyms appear in the first paragraph to make the topic clear immediately.
-            - Keyphrase Length: Make sure the keyphrase is neither too short nor too long, aligning with Yoast SEO's recommendations.
-            - Keyphrase in Meta Description: The keyphrase or its synonym should appear in the meta description to boost SEO effectiveness.
-            - Suggest Enough Keywords/Keyphrases: Ensure that the meta fields contain a sufficient number of relevant keywords or keyphrases, avoiding overuse or underuse.
-            - 1-2 key words or key phrase.
-
             Please format the response as a JSON object with the following structure:
             {
                 \"meta_title\": \"Title\",
-                \"meta_description\": \"Description\",
-                \"meta_keywords\": \"Keywords\"
+                \"meta_description\": \"Description\"
             }
 
             Also, the best meta title length is 50-60 characters and meta description length is between 50-160 characters. Please ensure that you limit its length appropriately after generating the content.
@@ -218,7 +198,6 @@ class Woo_MetaWizard_Metabox {
         $post_id = isset( $_POST['post_id'] ) ? intval( $_POST['post_id'] ) : 0;
         $meta_title = isset( $_POST['meta_title'] ) ? sanitize_text_field( $_POST['meta_title'] ) : '';
         $meta_description = isset( $_POST['meta_description'] ) ? sanitize_textarea_field( $_POST['meta_description'] ) : '';
-        $meta_keywords = isset( $_POST['meta_keywords'] ) ? sanitize_text_field( $_POST['meta_keywords'] ) : '';
     
         if ( $post_id && $meta_title && $meta_description ) {
             // Save the suggestion data independently of the post save action.
@@ -226,7 +205,6 @@ class Woo_MetaWizard_Metabox {
             $previous_suggestions[] = [
                 'meta_title' => $meta_title,
                 'meta_description' => $meta_description,
-                'meta_keywords' => $meta_keywords,
                 'timestamp' => time(),
             ];
             update_post_meta( $post_id, '_woo_metawizard_suggestions', $previous_suggestions );
@@ -294,7 +272,6 @@ class Woo_MetaWizard_Metabox {
                     </div>
                 </td>
                 <td><?php echo esc_html( $suggestion['meta_description'] ); ?></td>
-                <td><?php echo esc_html( $suggestion['meta_keywords'] ); ?></td>
             </tr>
             <?php
         }
