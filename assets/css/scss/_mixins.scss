@@ -1,0 +1,13 @@
+// Example of a simple button mixin
+@mixin button-style($bg-color, $hover-color) {
+    background-color: $bg-color;
+    border-color: $bg-color;
+    color: $color-white;
+    text-shadow: none;
+    box-shadow: none;
+
+    &:hover {
+        background-color: $hover-color;
+        border-color: $hover-color;
+    }
+}
