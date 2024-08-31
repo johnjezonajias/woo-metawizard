@@ -164,7 +164,7 @@ class Woo_MetaWizard_Metabox {
             - Mention variation options (size, color) and customization to highlight choices.
             - Emphasize unique selling points and benefits that distinguish the product.
             - Incorporate the store name \"" . $store_info['name'] . "\" to enhance brand recognition.
-            - Highlight the store location \"" . $store_info['location'] . "\" to improve local SEO and differentiate from competitors.
+            - Highlight the store location \"" . $store_info['full_address'] . "\" to improve local SEO and differentiate from competitors.
             - Use relevant, high-impact keywords, including the Focus Keyword: \"" . $focus_keyword . "\", to boost search visibility.
             - Maintain a consistent and professional tone across all meta titles.
             - Ensure the SEO title does not exceed 60 characters or approximately 600 pixels in width to avoid truncation in search engine results.
@@ -173,7 +173,7 @@ class Woo_MetaWizard_Metabox {
             - Create concise, informative descriptions that clearly present product features and benefits.
             - Highlight unique selling points, including any variation and customization options.
             - Reinforce brand identity by mentioning the store name \"" . $store_info['name'] . "\" in the description.
-            - Emphasize the store’s location \"" . $store_info['location'] . "\" to attract local customers and stand out in the local market.
+            - Emphasize the store’s location \"" . $store_info['full_address'] . "\" to attract local customers and stand out in the local market.
             - Strategically integrate the Focus Keyword: \"" . $focus_keyword . "\" along with other relevant keywords to improve search rankings without keyword stuffing.
             - Ensure a consistent tone that matches the meta title and overall brand voice.
             - Strictly limit the meta description to 155-160 characters to comply with Yoast SEO guidelines and prevent truncation in search results.
