@@ -85,19 +85,19 @@ class Woo_MetaWizard_Metabox {
                 <span id="form-spinner" class="spinner" style="display:none;"></span>
             </div>
 
-            <?php if ( ! empty( $previous_suggestions ) ) : ?>
-                <div class="woo-metawizard-table">
-                    <h4><?php esc_html_e( 'Saved metadata', 'woo-metawizard' ); ?></h4>
-                    <div class="woo-metawizard-table__wrap">
-                        <table id="woo-metawizard-table" class="widefat">
-                            <thead>
-                                <tr>
-                                    <th><?php esc_html_e( 'No.', 'woo-metawizard' ); ?></th>
-                                    <th><?php esc_html_e( 'Meta Title', 'woo-metawizard' ); ?></th>
-                                    <th><?php esc_html_e( 'Meta Description', 'woo-metawizard' ); ?></th>
-                                </tr>
-                            </thead>
-                            <tbody>
+            <div class="woo-metawizard-table">
+                <h4><?php esc_html_e( 'Saved metadata', 'woo-metawizard' ); ?></h4>
+                <div class="woo-metawizard-table__wrap">
+                    <table id="woo-metawizard-table" class="widefat">
+                        <thead>
+                            <tr>
+                                <th><?php esc_html_e( 'No.', 'woo-metawizard' ); ?></th>
+                                <th><?php esc_html_e( 'Meta Title', 'woo-metawizard' ); ?></th>
+                                <th><?php esc_html_e( 'Meta Description', 'woo-metawizard' ); ?></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php if ( ! empty( $previous_suggestions ) ) : ?>
                                 <?php foreach ( $previous_suggestions as $index => $suggestion ) : ?>
                                     <tr>
                                         <td>
@@ -114,12 +114,12 @@ class Woo_MetaWizard_Metabox {
                                         <td><?php echo esc_html( $suggestion['meta_description'] ); ?></td>
                                     </tr>
                                 <?php endforeach; ?>
-                            </tbody>
-                        </table>
-                        <span id="table-spinner" class="spinner" style="display:none;"></span>
-                    </div>
+                            <?php endif; ?>
+                        </tbody>
+                    </table>
+                    <span id="table-spinner" class="spinner" style="display:none;"></span>
                 </div>
-            <?php endif; ?>
+            </div>
         </div>
         <?php
     }
