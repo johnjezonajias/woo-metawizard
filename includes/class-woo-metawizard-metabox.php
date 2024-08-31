@@ -41,10 +41,8 @@ class Woo_MetaWizard_Metabox {
         ?>
 
         <div class="woo-metawizard-metabox">
-            <div id="woo_metawizard_suggestions"></div>
-
             <div class="woo-metawizard-current">
-                <h4><?php esc_html_e( 'Current product data', 'woo-metawizard' ); ?></h4>
+                <h4><?php esc_html_e( 'Current metadata', 'woo-metawizard' ); ?></h4>
                 <p>
                     <strong><?php esc_html_e( 'Title', 'woo-metawizard' ); ?></strong><br />
                     <?php echo esc_html( $product_title ); ?>
@@ -52,6 +50,10 @@ class Woo_MetaWizard_Metabox {
                 <p>
                     <strong><?php esc_html_e( 'Description', 'woo-metawizard' ); ?></strong><br />
                     <?php echo esc_textarea( $product_description ); ?>
+                </p>
+                <p>	
+                    <strong><?php esc_html_e( 'Focus Keyword', 'woo-metawizard' ); ?></strong><br />
+                    <input type="text" id="woo_metawizard_focus_keyword" name="woo_metawizard_focus_keyword" value="" class="widefat" />	
                 </p>
                 <p>
                     <button type="button" class="button button-primary" id="woo_metawizard_generate_seo">
@@ -62,13 +64,13 @@ class Woo_MetaWizard_Metabox {
             
             <div class="woo-metawizard-placeholder">
                 <div class="woo-metawizard-wrap">
-                    <h4><?php esc_html_e( 'Optimized SEO suggestion result', 'woo-metawizard' ); ?></h4>
+                    <h4><?php esc_html_e( 'Optimized metadata', 'woo-metawizard' ); ?></h4>
                     <p>
-                        <label for="woo_metawizard_meta_title"><?php esc_html_e( 'Meta Title', 'woo-metawizard' ); ?></label>
+                        <label for="woo_metawizard_meta_title"><strong><?php esc_html_e( 'Meta Title', 'woo-metawizard' ); ?></strong></label>
                         <input type="text" id="woo_metawizard_meta_title" name="woo_metawizard_meta_title" value="" class="widefat" />
                     </p>
                     <p>
-                        <label for="woo_metawizard_meta_description"><?php esc_html_e( 'Meta Description', 'woo-metawizard' ); ?></label>
+                        <label for="woo_metawizard_meta_description"><strong><?php esc_html_e( 'Meta Description', 'woo-metawizard' ); ?></strong></label>
                         <textarea id="woo_metawizard_meta_description" name="woo_metawizard_meta_description" class="widefat"></textarea>
                     </p>
                     <p>
@@ -85,35 +87,37 @@ class Woo_MetaWizard_Metabox {
 
             <?php if ( ! empty( $previous_suggestions ) ) : ?>
                 <div class="woo-metawizard-table">
-                    <h4><?php esc_html_e( 'Saved suggested data', 'woo-metawizard' ); ?></h4>
-                    <table id="woo-metawizard-table" class="widefat">
-                        <thead>
-                            <tr>
-                                <th><?php esc_html_e( 'No.', 'woo-metawizard' ); ?></th>
-                                <th><?php esc_html_e( 'Meta Title', 'woo-metawizard' ); ?></th>
-                                <th><?php esc_html_e( 'Meta Description', 'woo-metawizard' ); ?></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php foreach ( $previous_suggestions as $index => $suggestion ) : ?>
+                    <h4><?php esc_html_e( 'Saved metadata', 'woo-metawizard' ); ?></h4>
+                    <div class="woo-metawizard-table__wrap">
+                        <table id="woo-metawizard-table" class="widefat">
+                            <thead>
                                 <tr>
-                                    <td>
-                                        <?php echo esc_html( $index + 1 ); ?>
-                                    </td>
-                                    <td>
-                                        <?php echo esc_html( $suggestion['meta_title'] ); ?><br />
-                                        <div class="row-actions">
-                                            <a href="#" class="woo-metawizard-use-yoast" data-index="<?php echo esc_attr( $index ); ?>"><?php esc_html_e( 'Use it for Yoast', 'woo-metawizard' ); ?></a> |
-                                            <a href="#" class="woo-metawizard-delete" data-index="<?php echo esc_attr( $index ); ?>"><?php esc_html_e( 'Delete', 'woo-metawizard' ); ?></a> | 
-                                            <?php echo esc_html( date( 'Y-m-d H:i:s', $suggestion['timestamp'] ) ); ?>
-                                        </div>
-                                    </td>
-                                    <td><?php echo esc_html( $suggestion['meta_description'] ); ?></td>
+                                    <th><?php esc_html_e( 'No.', 'woo-metawizard' ); ?></th>
+                                    <th><?php esc_html_e( 'Meta Title', 'woo-metawizard' ); ?></th>
+                                    <th><?php esc_html_e( 'Meta Description', 'woo-metawizard' ); ?></th>
                                 </tr>
-                            <?php endforeach; ?>
-                        </tbody>
-                    </table>
-                    <span id="table-spinner" class="spinner" style="display:none;"></span>
+                            </thead>
+                            <tbody>
+                                <?php foreach ( $previous_suggestions as $index => $suggestion ) : ?>
+                                    <tr>
+                                        <td>
+                                            <?php echo esc_html( $index + 1 ); ?>
+                                        </td>
+                                        <td>
+                                            <?php echo esc_html( $suggestion['meta_title'] ); ?><br />
+                                            <div class="row-actions">
+                                                <a href="#" class="woo-metawizard-use-yoast" data-index="<?php echo esc_attr( $index ); ?>"><?php esc_html_e( 'Use it for Yoast', 'woo-metawizard' ); ?></a> |
+                                                <a href="#" class="woo-metawizard-delete" data-index="<?php echo esc_attr( $index ); ?>"><?php esc_html_e( 'Delete', 'woo-metawizard' ); ?></a> | 
+                                                <?php echo esc_html( date( 'Y-m-d H:i:s', $suggestion['timestamp'] ) ); ?>
+                                            </div>
+                                        </td>
+                                        <td><?php echo esc_html( $suggestion['meta_description'] ); ?></td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            </tbody>
+                        </table>
+                        <span id="table-spinner" class="spinner" style="display:none;"></span>
+                    </div>
                 </div>
             <?php endif; ?>
         </div>
@@ -125,6 +129,7 @@ class Woo_MetaWizard_Metabox {
         check_ajax_referer( 'woo_metawizard_generate_seo', 'nonce' );
 
         $post_id = intval( $_POST['post_id'] );
+        $focus_keyword = sanitize_text_field( $_POST['focus_keyword'] );
     
         // Check if the user has permission.
         if ( ! current_user_can( 'edit_post', $post_id ) ) {
@@ -158,18 +163,18 @@ class Woo_MetaWizard_Metabox {
             - Include the product name and key features for relevance and consistency.
             - Mention variation options (size, color) and customization to highlight choices.
             - Emphasize unique selling points and benefits that distinguish the product.
-            - Incorporate the store name " . $store_info['name'] . " to enhance brand recognition.
-            - Highlight the store location to improve local SEO and differentiate from competitors.
-            - Use relevant, high-impact keywords to boost search visibility.
+            - Incorporate the store name \"" . $store_info['name'] . "\" to enhance brand recognition.
+            - Highlight the store location \"" . $store_info['location'] . "\" to improve local SEO and differentiate from competitors.
+            - Use relevant, high-impact keywords, including the Focus Keyword: \"" . $focus_keyword . "\", to boost search visibility.
             - Maintain a consistent and professional tone across all meta titles.
-            - Make sure the SEO title strictly does not exceed 60 characters or approximately 600 pixels in width to avoid truncation in search engine results.
+            - Ensure the SEO title does not exceed 60 characters or approximately 600 pixels in width to avoid truncation in search engine results.
 
             Guidelines for Meta Descriptions:
             - Create concise, informative descriptions that clearly present product features and benefits.
             - Highlight unique selling points, including any variation and customization options.
-            - Reinforce brand identity by mentioning the store name " . $store_info['name'] . " in the description.
-            - Emphasize the store’s location to attract local customers and stand out in the local market.
-            - Strategically integrate relevant keywords to improve search rankings without keyword stuffing.
+            - Reinforce brand identity by mentioning the store name \"" . $store_info['name'] . "\" in the description.
+            - Emphasize the store’s location \"" . $store_info['location'] . "\" to attract local customers and stand out in the local market.
+            - Strategically integrate the Focus Keyword: \"" . $focus_keyword . "\" along with other relevant keywords to improve search rankings without keyword stuffing.
             - Ensure a consistent tone that matches the meta title and overall brand voice.
             - Strictly limit the meta description to 155-160 characters to comply with Yoast SEO guidelines and prevent truncation in search results.
 
@@ -207,6 +212,7 @@ class Woo_MetaWizard_Metabox {
                 'meta_description' => $meta_description,
                 'timestamp' => time(),
             ];
+
             update_post_meta( $post_id, '_woo_metawizard_suggestions', $previous_suggestions );
     
             wp_send_json_success();

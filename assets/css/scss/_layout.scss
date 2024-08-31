@@ -30,32 +30,40 @@ button.button {
     border-radius: 4px;
     box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
     background: #fff;
-    margin-bottom: 15px;
+}
+
+.woo-metawizard-table,
+.woo-metawizard-current,
+.woo-metawizard-placeholder {
+    background: $color-light-gray;
+    border: 2px solid $color-border;
+    padding: $spacing-base;
+    border-radius: $border-radius-base;
+    box-shadow: 0 1px 3px rgba($color-black, 0.05);
 }
 
 .woo-metawizard-current,
 .woo-metawizard-placeholder {
-    background: $color-light-gray;
-    border: $border-width-base solid $color-border;
-    padding: $spacing-base;
-    border-radius: $border-radius-base;
-    box-shadow: 0 1px 3px rgba($color-black, 0.05);
-    margin-bottom: $spacing-base;
+    flex: 1 1 calc(50% - 10px);
 }
 
-.woo-metawizard-current {
-    margin-bottom: 15px;
-
-    button.button {
-        margin-top: 15px;
-    }
+.woo-metawizard-current button.button {
+    margin-top: 15px;
 }
 
 .woo-metawizard-placeholder {
+    background-color: #e8fbe0;
+    border-color: #4ed714;
+    border-style: dashed;
     position: relative;
 }
 
 .woo-metawizard-table {
-    margin-top: 30px;
+    border-style: dashed;
     position: relative;
+    flex: 1 1 100%;
+
+    &__wrap {
+        position: relative;
+    }
 }

@@ -11,6 +11,7 @@ jQuery(document).ready(function($) {
         const data = {
             action: 'woo_metawizard_generate_seo',
             post_id: $('#post_ID').val(),
+            focus_keyword: $('#woo_metawizard_focus_keyword').val(),
             nonce: woo_metawizard.nonce
         };
     
@@ -134,8 +135,6 @@ jQuery(document).ready(function($) {
             },
             success: function(response) {
                 if (response.success) {
-                    alert('Suggestion saved successfully.');
-
                     // Clear the input fields.
                     $('#woo_metawizard_meta_title').val('');
                     $('#woo_metawizard_meta_description').val('');
