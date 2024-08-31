@@ -1,23 +1,23 @@
 body {
+    background-color: $color-white;
+    color: $color-black;
     font-size: $font-size-base;
     font-family: $font-family-base;
-    color: $color-black;
-    background-color: $color-white;
     line-height: 1.5;
 }
 
 h4 {
-    font-size: 16px;
-    color: $color-black;
-    margin-bottom: $spacing-base;
     border-bottom: $border-width-base solid $color-light-gray;
-    padding-bottom: $spacing-small;
+    color: $color-black;
     font-family: $font-family-headings;
+    font-size: 16px;
     font-weight: $font-weight-bold;
+    margin-bottom: $spacing-base;
+    padding-bottom: $spacing-small;
 }
 
 p {
-    margin-bottom: $spacing-base;
-    font-size: $font-size-base;
     color: $color-gray;
+    font-size: $font-size-base;
+    margin-bottom: $spacing-base;
 }

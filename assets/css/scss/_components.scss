@@ -1,10 +1,10 @@
 button.button {
     @include button-style($color-primary, $color-primary-hover);
-    font-size: $font-size-base;
-    padding: $spacing-small $spacing-large;
     border-radius: $border-radius-base;
+    font-size: $font-size-base;
     margin-right: $spacing-small;
     min-width: 120px;
+    padding: $spacing-small $spacing-large;
 }
 
 .spinner {
