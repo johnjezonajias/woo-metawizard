@@ -1,5 +1,7 @@
 <?php
 
+namespace WooMetaWizard\Includes;
+
 // Prevent direct access to the file.
 if ( ! defined( 'ABSPATH' ) ) {
     exit;

@@ -22,22 +22,29 @@
  * Requires Plugins:  woocommerce, wordpress-seo
  */
 
-// Prevent direct access to the file.
+namespace WooMetaWizard;
+
+use WooMetaWizard\Includes\Woo_MetaWizard;
+
 if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-// Define constants.
 define( 'WMH_VERSION', '1.0.0' );
 define( 'WMH_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'WMH_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 
-// Include the core plugin class.
-require_once WMH_PLUGIN_DIR . 'includes/class-woo-metawizard.php';
+// Check if Composer's autoload file exists and include it.
+if ( file_exists( WMH_PLUGIN_DIR . 'vendor/autoload.php' ) ) {
+    require_once WMH_PLUGIN_DIR . 'vendor/autoload.php';
+} else {
+    // Handle the case when autoload.php is missing.
+    error_log( 'Composer autoload file not found. Please install the dependencies via Composer. [ composer install --optimize-autoloader --no-dev ]' );
+}
 
-// Activation and deactivation hooks.
-register_activation_hook( __FILE__, [ 'Woo_MetaWizard', 'activate' ] );
-register_deactivation_hook( __FILE__, [ 'Woo_MetaWizard', 'deactivate' ] );
+// Register hooks.
+register_activation_hook( __FILE__, [ Woo_MetaWizard::class, 'activate' ] );
+register_deactivation_hook( __FILE__, [ Woo_MetaWizard::class, 'deactivate' ] );
 
 // Initialize the plugin.
-add_action( 'plugins_loaded', [ 'Woo_MetaWizard', 'init' ] );
+add_action( 'plugins_loaded', [ Woo_MetaWizard::class, 'init' ] );

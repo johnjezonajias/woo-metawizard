@@ -1,5 +1,10 @@
 <?php
 
+namespace WooMetaWizard\Includes;
+
+use WooMetaWizard\Utilities\Woo_MetaWizard_API;
+use WooMetaWizard\Utilities\Woo_MetaWizard_Utils;
+
 // Prevent direct access to the file.
 if ( ! defined( 'ABSPATH' ) ) {
     exit;
@@ -138,16 +143,18 @@ class Woo_MetaWizard_Metabox {
 
         // Retrieve current product title and description.
         $product_title       = get_the_title( $post_id );
+        $product_excerpt     = get_the_excerpt( $post_id );
         $product_description = get_post_field( 'post_content', $post_id );
-
+        $product_description = ! empty( $product_description ) ? $product_description : $product_excerpt;
+        
         // Retrieve WooCommerce store information.
-        $store_info = WooMetaWizard_Utils::get_store_info();
+        $store_info = Woo_MetaWizard_Utils::get_store_info();
 
         // Retrieve current product information.
-        $product_categories = WooMetaWizard_Utils::get_product_categories( $post_id );
-        $product_url        = WooMetaWizard_Utils::get_product_url( $post_id);
-        $product_image_url  = WooMetaWizard_Utils::get_product_image_url( $post_id );
-        $variations_string  = WooMetaWizard_Utils::get_product_variations_string( $post_id );
+        $product_categories = Woo_MetaWizard_Utils::get_product_categories( $post_id );
+        $product_url        = Woo_MetaWizard_Utils::get_product_url( $post_id);
+        $product_image_url  = Woo_MetaWizard_Utils::get_product_image_url( $post_id );
+        $variations_string  = Woo_MetaWizard_Utils::get_product_variations_string( $post_id );
 
         // Main PRIMER for OpenAI.
         $primer = "
@@ -161,7 +168,7 @@ class Woo_MetaWizard_Metabox {
 
             Guidelines for Meta Titles:
             - Include the product name and key features for relevance and consistency.
-            - Mention variation options (size, color) and customization to highlight choices.
+            - If applicable, mention the most popular or unique variation from the following options: $variations_string (e.g., size, price).
             - Emphasize unique selling points and benefits that distinguish the product.
             - Incorporate the store name \"" . $store_info['name'] . "\" to enhance brand recognition.
             - Highlight the store location \"" . $store_info['full_address'] . "\" to improve local SEO and differentiate from competitors.
@@ -171,12 +178,13 @@ class Woo_MetaWizard_Metabox {
 
             Guidelines for Meta Descriptions:
             - Create concise, informative descriptions that clearly present product features and benefits.
+            - Include any variation details such as: $variations_string (e.g., sizes, colors, prices).
             - Highlight unique selling points, including any variation and customization options.
             - Reinforce brand identity by mentioning the store name \"" . $store_info['name'] . "\" in the description.
             - Emphasize the store’s location \"" . $store_info['full_address'] . "\" to attract local customers and stand out in the local market.
             - Strategically integrate the Focus Keyword: \"" . $focus_keyword . "\" along with other relevant keywords to improve search rankings without keyword stuffing.
             - Ensure a consistent tone that matches the meta title and overall brand voice.
-            - Strictly limit the meta description to 155-160 characters to comply with Yoast SEO guidelines and prevent truncation in search results.
+            - Strictly limit the meta description to 50-160 characters to comply with Yoast SEO guidelines and prevent truncation in search results.
 
             Please format the response as a JSON object with the following structure:
             {
@@ -188,7 +196,7 @@ class Woo_MetaWizard_Metabox {
         ";
 
         // Call OpenAI API with product data (you will need to implement the API call).
-        $response = WooMetaWizard_API::call_openai_api( $primer );
+        $response = Woo_MetaWizard_API::call_openai_api( $primer );
 
         if ( is_array( $response ) && isset( $response['error'] ) ) {
             wp_send_json_error( [ 'message' => $response['error'] ] );

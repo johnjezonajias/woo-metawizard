@@ -1,6 +1,8 @@
 <?php
 
-class WooMetaWizard_API {
+namespace WooMetaWizard\Utilities;
+
+class Woo_MetaWizard_API {
 
     /**
      * Sends a request to the OpenAI API to generate SEO suggestions.
@@ -65,7 +67,7 @@ class WooMetaWizard_API {
         if ( ! empty( $response['choices'] ) ) {
             return $response['choices'][0]['message']['content'];
         } else {
-            return ['error' => 'No response from API'];
+            return ['errors' => 'No response from API'];
         }
     }
 }

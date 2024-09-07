@@ -1,11 +1,13 @@
 <?php
 
+namespace WooMetaWizard\Utilities;
+
 // Prevent direct access to the file.
 if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-class WooMetaWizard_Utils {
+class Woo_MetaWizard_Utils {
 
     /**
      * Get WooCommerce store name.
@@ -129,26 +131,36 @@ class WooMetaWizard_Utils {
      * @return array
      */
     public static function get_product_variations( $product_id ) {
+        // Ensure WooCommerce is available.
+        if ( ! class_exists( 'WooCommerce' ) ) {
+            return array();
+        }
+
         $product = wc_get_product( $product_id );
 
+        // Ensure it's a variable product.
         if ( ! $product || ! $product->is_type( 'variable' ) ) {
             return array();
         }
 
-        $variations = $product->get_children();
+        $variations = $product->get_children(); // Get variation IDs.
         $variation_data = array();
 
         foreach ( $variations as $variation_id ) {
-            $variation = new WC_Product_Variation( $variation_id );
+            // Ensure WC_Product_Variation class exists.
+            if ( class_exists( 'WC_Product_Variation' ) ) {
+                $variation = new \WC_Product_Variation( $variation_id );
 
-            $variation_data[] = array(
-                'variation_id'  => $variation_id,
-                'attributes'    => $variation->get_attributes(),
-                'regular_price' => $variation->get_regular_price(),
-                'sale_price'    => $variation->get_sale_price(),
-                'sku'           => $variation->get_sku(),
-                'description'   => $variation->get_description(),
-            );
+                // Gather variation data.
+                $variation_data[] = array(
+                    'variation_id'  => $variation_id,
+                    'attributes'    => $variation->get_attributes(),
+                    'regular_price' => $variation->get_regular_price(),
+                    'sale_price'    => $variation->get_sale_price(),
+                    'sku'           => $variation->get_sku(),
+                    'description'   => $variation->get_description(),
+                );
+            }
         }
 
         return $variation_data;
@@ -162,28 +174,35 @@ class WooMetaWizard_Utils {
      */
     public static function get_product_variations_string( $product_id ) {
         $variations = self::get_product_variations( $product_id );
-
+    
         if ( empty( $variations ) ) {
             return '';
         }
-
-        $currency_symbol = get_woocommerce_currency_symbol();
+    
+        // Get the WooCommerce currency symbol (e.g., ₱).
+        $currency_symbol = html_entity_decode( get_woocommerce_currency_symbol() );
         $variation_strings = array();
-
+    
         foreach ( $variations as $variation ) {
+            // Create a string for the attributes (e.g., Pa_size: large).
             $attributes_string = implode( ', ', array_map( function( $value, $key ) {
                 return ucfirst( $key ) . ": $value";
             }, $variation['attributes'], array_keys( $variation['attributes'] ) ) );
-
-            $price_string = $variation['sale_price'] 
-                ? "Sale Price: {$currency_symbol}{$variation['sale_price']}" 
-                : "Regular Price: {$currency_symbol}{$variation['regular_price']}";
-
+    
+            // Handle price: Sale price if available, otherwise regular price.
+            if ( ! empty( $variation['sale_price'] ) ) {
+                $price_string = "Sale Price: {$currency_symbol}{$variation['sale_price']}";
+            } else {
+                $price_string = "Regular Price: {$currency_symbol}{$variation['regular_price']}";
+            }
+    
+            // Combine attributes and price into one string.
             $variation_strings[] = "[{$attributes_string}, {$price_string}]";
         }
-
+    
+        // Return the variations as a single string, separated by space.
         return implode( " ", $variation_strings );
-    }
+    }    
 
     /**
      * Sanitize a checkbox input.

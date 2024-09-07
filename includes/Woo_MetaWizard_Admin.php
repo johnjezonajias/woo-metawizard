@@ -1,5 +1,7 @@
 <?php
 
+namespace WooMetaWizard\Includes;
+
 // Prevent direct access to the file.
 if ( ! defined( 'ABSPATH' ) ) {
     exit;
@@ -46,7 +48,7 @@ class Woo_MetaWizard_Admin {
 
         register_setting( 'woo_metawizard_settings', 'woo_metawizard_delete_data_on_deactivation', [
             'type'              => 'string',
-            'sanitize_callback' =>  [ 'WooMetaWizard_Utils', 'sanitize_checkbox' ],
+            'sanitize_callback' =>  [ 'Woo_MetaWizard_Utils', 'sanitize_checkbox' ],
             'default'           => 'no'
         ]);
 
