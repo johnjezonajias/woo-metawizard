@@ -24,14 +24,14 @@ class Woo_MetaWizard_Utils {
      * @return array
      */
     public static function get_store_address() {
-        return array(
+        return [
             'address_1' => get_option( 'woocommerce_store_address' ),
             'address_2' => get_option( 'woocommerce_store_address_2' ),
             'city'      => get_option( 'woocommerce_store_city' ),
             'postcode'  => get_option( 'woocommerce_store_postcode' ),
             'country'   => WC()->countries->get_base_country(),
             'state'     => WC()->countries->get_base_state(),
-        );
+        ];
     }
 
     /**
@@ -40,10 +40,10 @@ class Woo_MetaWizard_Utils {
      * @return array
      */
     public static function get_store_contact_info() {
-        return array(
+        return [
             'email' => get_option( 'woocommerce_email_from_address' ),
             'phone' => get_option( 'woocommerce_store_phone' ),
-        );
+        ];
     }
 
     /**
@@ -53,14 +53,14 @@ class Woo_MetaWizard_Utils {
      */
     public static function get_full_store_address() {
         $address = self::get_store_address();
-        $address_parts = array_filter( array(
+        $address_parts = array_filter( [
             $address['address_1'],
             $address['address_2'],
             $address['city'],
             $address['state'],
             $address['postcode'],
             $address['country'],
-        ) );
+        ] );
 
         return implode( ', ', $address_parts );
     }
@@ -71,11 +71,11 @@ class Woo_MetaWizard_Utils {
      * @return array
      */
     public static function get_store_info() {
-        return array(
+        return [
             'name'         => self::get_store_name(),
             'full_address' => self::get_full_store_address(),
             'contact_info' => self::get_store_contact_info(),
-        );
+        ];
     }
 
     /**
@@ -133,18 +133,19 @@ class Woo_MetaWizard_Utils {
     public static function get_product_variations( $product_id ) {
         // Ensure WooCommerce is available.
         if ( ! class_exists( 'WooCommerce' ) ) {
-            return array();
+            return [];
         }
 
         $product = wc_get_product( $product_id );
 
         // Ensure it's a variable product.
         if ( ! $product || ! $product->is_type( 'variable' ) ) {
-            return array();
+            return [];
         }
 
-        $variations = $product->get_children(); // Get variation IDs.
-        $variation_data = array();
+        // Get variation IDs.
+        $variations = $product->get_children();
+        $variation_data = [];
 
         foreach ( $variations as $variation_id ) {
             // Ensure WC_Product_Variation class exists.
@@ -152,14 +153,14 @@ class Woo_MetaWizard_Utils {
                 $variation = new \WC_Product_Variation( $variation_id );
 
                 // Gather variation data.
-                $variation_data[] = array(
+                $variation_data[] = [
                     'variation_id'  => $variation_id,
                     'attributes'    => $variation->get_attributes(),
                     'regular_price' => $variation->get_regular_price(),
                     'sale_price'    => $variation->get_sale_price(),
                     'sku'           => $variation->get_sku(),
                     'description'   => $variation->get_description(),
-                );
+                ];
             }
         }
 
@@ -181,7 +182,7 @@ class Woo_MetaWizard_Utils {
     
         // Get the WooCommerce currency symbol (e.g., ₱).
         $currency_symbol = html_entity_decode( get_woocommerce_currency_symbol() );
-        $variation_strings = array();
+        $variation_strings = [];
     
         foreach ( $variations as $variation ) {
             // Create a string for the attributes (e.g., Pa_size: large).

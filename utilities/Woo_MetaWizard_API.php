@@ -24,22 +24,22 @@ class Woo_MetaWizard_API {
         $temperature = floatval( get_option( 'woo_metawizard_temperature' ) );
         $max_tokens = intval( get_option( 'woo_metawizard_max_tokens' ) );
 
-        $headers = array(
+        $headers = [
             "Authorization: Bearer {$api_key}",
             "Content-Type: application/json"
-        );
+        ];
 
-        $data = array(
+        $data = [
             "model"       => $model,
-            "messages"    => array(
-                array(
+            "messages"    => [
+                [
                     "role"    => "system",
                     "content" => $primer
-                )
-            ),
+                ]
+            ],
             "temperature" => $temperature,
             "max_tokens"  => $max_tokens
-        );
+        ];
 
         $curl = curl_init( $url );
         curl_setopt( $curl, CURLOPT_POST, 1 );

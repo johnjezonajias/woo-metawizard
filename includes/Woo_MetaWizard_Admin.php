@@ -201,7 +201,7 @@ class Woo_MetaWizard_Admin {
         wp_enqueue_style(
             'woo-metawizard-settings-styles',
             WMH_PLUGIN_URL . 'assets/css/admin/admin-styles.css',
-            array(),
+            [],
             WMH_VERSION
         );
     }
@@ -211,7 +211,7 @@ class Woo_MetaWizard_Admin {
             wp_enqueue_style(
                 'woo-metawizard-styles',
                 WMH_PLUGIN_URL . 'assets/css/styles.css',
-                array(),
+                [],
                 WMH_VERSION
             );
 
