@@ -30,13 +30,7 @@ class Woo_MetaWizard {
     }
 
     public static function load_dependencies() {
-        //require_once WMH_PLUGIN_DIR . 'includes/class-woo-metawizard-admin.php';
-        //require_once WMH_PLUGIN_DIR . 'includes/class-woo-metawizard-frontend.php';
-        //require_once WMH_PLUGIN_DIR . 'includes/class-woo-metawizard-metabox.php';
-
-        // Include utility functions.
-        //require_once WMH_PLUGIN_DIR . 'utilities/class-woo-metawizard-utils.php';
-        //require_once WMH_PLUGIN_DIR . 'utilities/class-woo-metawizard-api.php';
+        // Load dependencies via PSR-4 autoload.
     }
 
     public static function activate() {
